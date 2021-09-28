@@ -303,8 +303,8 @@ Dados los requerimientos de host, podemos agruparlas de esta manera:
 
 De los 5 bits que nos quedaron de host, necesitamos 4 para host ya que ambas redes necesitan más de 8 hosts (11/12 resp.). Con lo cual de esos 5 bits, tomamos 1 para subredes y podemos hacer 2 nuevas subredes con 2^4=16 hosts c/u (14 hosts útiles)
 
-Subred1': 200.113.2.224/28 = Red 2
-Subred2': 200.113.2.240/28 = Red 4
+* Subred1': 200.113.2.224/28 = Red 2
+* Subred2': 200.113.2.240/28 = Red 4
 
 Finalmente nos queda:
 
