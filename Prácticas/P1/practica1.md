@@ -188,6 +188,8 @@ comunicaciones punto a punto.
 
 NICETOHAVE: entender bien las tablas
 
+DONE: son las capas del modelo híbrido que estudiamos (híbrido entre OSI y TCP/IP) y cómo se comunican entre sí capas del mismo nivel
+
 **Ejercicio 12**
 
         |Fastbit ethernet| Gigabit ethernet | Canal de fibra | LAN Inalámbrica |

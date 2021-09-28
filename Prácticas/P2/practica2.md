@@ -21,47 +21,46 @@ iii.
 **Ejercicio 2**
 
 * 220.200.23.1
-
-Clase de red: C
-Parte de red: 220.200.23
-Parte del host: 1
-Máscara: 255.255.255.0
+  * Clase de red: C
+  * Parte de red: 220.200.23
+  * Parte del host: 1
+  * Máscara: 255.255.255.0
 
 * 148.17.9.1
-Clase de red: B
-Parte de red: 148.17
-Parte del host: 9.1
-Máscara: 255.255.0.0
+  * Clase de red: B
+  * Parte de red: 148.17
+  * Parte del host: 9.1
+  * Máscara: 255.255.0.0
 
 *  33.15.4.13
-Clase de red: A
-Parte de red: 33
-Parte del host: 15.4.13
-Máscara: 255.0.0.0
+   *  Clase de red: A
+   *  Parte de red: 33
+   *  Parte del host: 15.4.13
+   *  Máscara: 255.0.0.0
 
 * 249.240.80.78
-Clase de red: E
-Parte de red: -
-Parte del host: -
-Máscara: -
+  * Clase de red: E
+  * Parte de red: -
+  * Parte del host: -
+  * Máscara: -
 
 * 230.230.45.68
-Clase de red: D
-Parte de red: -
-Parte del host: -
-Máscara: -
+  * Clase de red: D
+  * Parte de red: -
+  * Parte del host: -
+  * Máscara: -
 
 * 192.68.12.8
-Clase de red: C
-Parte de red: 192.268.12
-Parte del host: 8
-Máscara: 255.255.255.0
+  * Clase de red: C
+  * Parte de red: 192.268.12
+  * Parte del host: 8
+  * Máscara: 255.255.255.0
 
 * 177.100.18.4
-Clase de red: B
-Parte de red: 177.100
-Parte del host: 18.4
-Máscara: 255.255.0.0
+  * Clase de red: B
+  * Parte de red: 177.100
+  * Parte del host: 18.4
+  * Máscara: 255.255.0.0
 
 * 95.250.91.99
 Clase de red: A
@@ -145,6 +144,7 @@ Destino | Máscara | Gateway|
 200.13.147.0| /24 | Entrega directa|
 200.13.148.0| /24 | ED|
 200.13.149.0| /24 | ED|
+0.0.0.0 | /0 | 200.13.147.21 (que vaya a internet) |
 
 ii.
 
@@ -159,7 +159,8 @@ En cada subred tenemos 2^6 - 2 hosts UTILES = 62 (64 en total, pero el 1ero va a
 * Subred 2: 200.13.147.64 (01-000000) => rango de hosts: 200.13.147.65 a 200.13.147.126 (.127 broadcast)
 * Subred 3: 200.13.147.128 (10-000000) => rango de hosts: 200.13.147.129 a 200.13.147.190 (.191 broadcast)
 * Subred 4: 200.13.147.192 (11-000000) => rango de hosts: 200.13.147.193 a 200.13.147.254 (.255 broadcast)
-Nota: no es necesaria para las redes pedidas, pero flavio la usó para el enlace al router que sale a internet.
+  
+Nota: la subred4 no es necesaria para las redes pedidas, pero flavio la usó para el enlace al router que sale a internet pq sobraba digamos al tener que hacer 3 subredes y ya que estamos...
 
 ![e7ii](./e7iiap2.png)
 
@@ -175,9 +176,11 @@ Destino | Máscara | Gateway|
 200.13.147.64| /26 | Entrega directa|
 200.13.147.128| /26 | Entrega directa|
 200.13.147.192 (internet) | /26 | Entrega directa |
-0.0.0.0 | /0 | 200.13.147.1 |
+0.0.0.0 | /0 | 200.13.147.1 (segun flavio) pero yo pondría 200.12.147.250|
 
-El significado de la última línea sería: si quiero ir a cualquier otro lado que no sean las direcciones anteriores, lo mando al host A (pq si)
+El significado de la última línea sería: si quiero ir a cualquier otro lado que no sean las direcciones anteriores, lo mando al host A (PQ SI??!!?)
+
+Y lo que yo quiero poner es que, si quiero ir a cualquier otra dirección de red que no sea las anteriores, lo mando a internet.
 
 **Ejercicio 8**
 
