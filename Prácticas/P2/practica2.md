@@ -181,9 +181,61 @@ El significado de la última línea sería: si quiero ir a cualquier otro lado q
 
 **Ejercicio 8**
 
-La 199.199.20.6 es la que va del router a Internet (pq las IP publicas son las que tienen acceso desde internet, asumiendo que la que nos dan es pública)
+* La 199.199.20.6 es la que va del router a Internet (pq las IP publicas son las que tienen acceso desde internet, asumiendo que la que nos dan es pública)
 
-El ID de la red 
+* La red 1 y la 5 tienen que tener como mínimo 50 hosts útiles c/u
+
+* Las redes 2, 3 y 4 deben tener como mínimo 28 hosts útiles c/u
+  
+i. y ii.
+
+ID de la red: 199.199.20.0/24 (al ser clase C)
+
+Necesitamos 5 (6 si consideramos a internet) subredes. Como primera idea podríamos pensar en robarnos 3 bits del host, para así generar 8 subredes (ya que si nos robamos 2 bits generamos solo 4 subredes). Si hacemos esto, nos quedarían 5 bits para los hosts de cada subred. Es decir, tendríamos 2^5 - 2 = 30 hosts útiles por subred. Con lo cual, no podemos seguir adelante con esta idea ya que tenemos como requerimiento que las redes 1 y 5 tengan como mínimo 50 hosts útiles.
+
+> Primer subneteo
+
+Entonces, procedemos a realizar un primer subneteo generando solo 4 redes (robandonos 2 bit del host), para que éstas tengan mayor cantidad de hosts.
+* Cantidad de subredes = 2^2 = 4
+* Máscara resultante: /26 (24+2)
+* Cantidad de hosts por subred = 2^6 = 64
+* Cantidad de hosts útiles por subred = 62
+
+Quedando:
+* Subred1: 199.199.20.0/26
+* Subred2: 199.199.20.64/26
+* Subred3: 199.199.20.128/26
+* Subred4: 199.199.20.192/26
+
+Por los requerimientos de los hosts, procedemos a agrupar arbitrariamente de esta manera:
+* Red 1: 199.199.20.0/26
+* Red 5: 199.199.20.64/26
+* Red 2 y 3: 199.199.20.128 <- debemos a su vez subdividirla
+* Red 4 e Internet: 199.199.20.192 <- debemos a su vez subdividirla
+
+Debemos ahora realizar un segundo subneteo para dividir éstas dos últimas subredes y poder asignarlas a cada una de las redes que queremos que la conformen.
+
+> Segundo subneteo
+
+Queremos 2 redes para cada una de estas ultimas subredes, con lo cual con robarnos un bit más de estas nos alcanza. 
+* Cantidad de subredes en cada subred (las 2 últimas)= 2^1 = 2
+* Máscara resultante: /27 (26+1)
+* Cantidad de hosts por subred = 2^5 = 32
+* Cantidad de hosts útiles por subred = 30
+
+Con lo cual, finalmente nos quedan las siguientes direcciones:
+* Red 1: 199.199.20.0/26 => rango hosts: 199.199.20.1 a 199.199.20.62 (.63 broadcast)
+* Red 5: 199.199.20.64/26 => rango hosts: 199.199.20.65 a 199.199.20.126 (.127 broadcast)
+* Red 2: 199.199.20.128/27 => rango hosts: 199.199.20.129 a 199.199.20.158 (.159 broadcast)
+* Red 3: 199.199.20.160/27 => rango hosts: 199.199.20.161 a 199.199.20.190 (.191 broadcast)
+* Red 4: 199.199.20.192/27 => rango hosts: 199.199.20.193 a 199.199.20.222 (.223 broadcast)
+* Internet: 199.199.20.224/27
+
+Esquema:
+
+b) Tablas de ruteo
+
+
 
 **Ejercicio 9**
 en la red 2, 11 host
