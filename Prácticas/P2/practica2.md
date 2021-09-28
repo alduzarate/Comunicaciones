@@ -211,7 +211,9 @@ Por los requerimientos de los hosts, procedemos a agrupar arbitrariamente de est
 * Red 1: 199.199.20.0/26
 * Red 5: 199.199.20.64/26
 * Red 2 y 3: 199.199.20.128 <- debemos a su vez subdividirla
-* Red 4 e Internet: 199.199.20.192 <- debemos a su vez subdividirla
+* Red 4 e Internet: 199.199.20.192 <- ¿debemos? a su vez subdividirla (¡)
+
+*(¡) Nota post finalizado el ejercicio: si seguimos la idea de la resolución del 7)a), para el enlace a Internet le podemos mandar cualquier host que nos sobre, y nos ahorramos el subneteo de la subred4 y la usamos directamente para la Red 4, para así ahorrarnos un poco de trabajo*
 
 Debemos ahora realizar un segundo subneteo para dividir éstas dos últimas subredes y poder asignarlas a cada una de las redes que queremos que la conformen.
 
@@ -273,4 +275,69 @@ Red 5: 199.199.20.64 | /26  |Entrega directa           |
 Inet: 199.199.20.224 | /27  |199.199.20.62 (Red1 a R1)     |
 
 **Ejercicio 9**
-en la red 2, 11 host
+
+* R2 se conecta a internet
+* Red1 no tiene acceso a internet (pero sí las demás)
+* ID de la red: 200.113.2.192/26 (ya viene subneteada)
+* Necesitan: 
+  * Red2: 11 hosts
+  * Red3: 28 hosts
+  * Red4: 12 hosts
+  
+i.
+
+La Red 1 no tiene acceso a internet, con lo cual usamos una de las redes privadas de la clase. Como la IP es 200.x, estamos en la clase C, y en esta clase las redes privadas van desde 192.168.0.0 a 192.168.255.255. Con lo cual procedemos a darle a la Red 1 la IP 192.168.1.0/24
+
+La red que más hosts demanda es la Red3. Por lo que si de los 6 bits que nos quedaron de host, tomamos 1 para subredes y 5 para host nos quedarían 2 subredes de 2^5 = 32 host c/u (30 hosts útiles)
+
+> Primer subneteo
+
+* Subred1: 200.113.2.192/27
+* Subred2: 200.113.2.224/27
+
+Dados los requerimientos de host, podemos agruparlas de esta manera:
+* Red 3: 200.113.2.192/27
+* Red 2 y 4: 200.113.2.224/27 <- debemos a su vez subdividirla para resolver este conflicto entre las redes 2 y 4
+
+> Segundo subneteo
+
+De los 5 bits que nos quedaron de host, necesitamos 4 para host ya que ambas redes necesitan más de 8 hosts (11/12 resp.). Con lo cual de esos 5 bits, tomamos 1 para subredes y podemos hacer 2 nuevas subredes con 2^4=16 hosts c/u (14 hosts útiles)
+
+Subred1': 200.113.2.224/28 = Red 2
+Subred2': 200.113.2.240/28 = Red 4
+
+Finalmente nos queda:
+
+* Red1: 192.168.1.0/24 => rango hosts: 192.168.1.1 a 192.168.1.254 (.255 broadcast)
+* Red2: 200.113.2.224/28 => rango hosts: 200.113.2.225 a 200.113.2.238 (.239 broadcast)
+* Red3: 200.113.2.192/27 => rango hosts: 200.113.2.193 a 200.113.2.222 (.223 broadcast)
+* Red4: 200.113.2.240/28 => rango hosts: 200.113.2.241 a 200.113.2.254 (.255 broadcast)
+
+Posible esquema:
+
+![e9](./e9p2.png)
+
+ii.
+
+Tablas de routeo
+
+**R2**
+
+Destino              |Máscara| Gateway  |
+---------------------|------|-----------|
+Red 1: 192.168.1.0  | /24  |200.113.2.238 (Red2 a R1)            |
+Red 2: 200.113.2.224| /28  |Entrega directa          |
+Red 3: 200.113.2.192/27| /27  |200.113.2.254 (Red4 a R3) | 
+Red 4: 200.113.2.240| /28  |Entrega directa         |
+0.0.0.0 | /0  |  200.100.2.2 (va para internet)          |
+
+**R3**
+
+Destino              |Máscara| Gateway  |
+---------------------|------|-----------|
+Red 1: 192.168.1.0  | /24  |200.113.2.222 (Red3 a R1)            |
+Red 2: 200.113.2.224| /28  |200.113.2.254 (Red4 a R2)          |
+Red 3: 200.113.2.192/27| /27  |Entrega directa | 
+Red 4: 200.113.2.240| /28  |Entrega directa          |
+0.0.0.0 | /0  |200.113.2.254 (Red4 a R2) (y ahí el R2 sabe que hacer y lo manda para internet)           |
+
