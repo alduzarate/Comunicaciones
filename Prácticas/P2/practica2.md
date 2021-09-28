@@ -27,7 +27,47 @@ Parte de red: 220.200.23
 Parte del host: 1
 Máscara: 255.255.255.0
 
-TODO
+* 148.17.9.1
+Clase de red: B
+Parte de red: 148.17
+Parte del host: 9.1
+Máscara: 255.255.0.0
+
+*  33.15.4.13
+Clase de red: A
+Parte de red: 33
+Parte del host: 15.4.13
+Máscara: 255.0.0.0
+
+* 249.240.80.78
+Clase de red: E
+Parte de red: -
+Parte del host: -
+Máscara: -
+
+* 230.230.45.68
+Clase de red: D
+Parte de red: -
+Parte del host: -
+Máscara: -
+
+* 192.68.12.8
+Clase de red: C
+Parte de red: 192.268.12
+Parte del host: 8
+Máscara: 255.255.255.0
+
+* 177.100.18.4
+Clase de red: B
+Parte de red: 177.100
+Parte del host: 18.4
+Máscara: 255.255.0.0
+
+* 95.250.91.99
+Clase de red: A
+Parte de red: 95
+Parte del host: 250.91.99
+Máscara: 255.0.0.0
 
 **Ejercicio 3**
 
@@ -89,7 +129,10 @@ El A manda el paquete al R1. Este no tiene entrega directa al destino, pero por 
 **Ejercicio 7**
 
 i.
-a)
+
+a) Como ya tenemos 3 IP para cada una de las 3 redes, no es necesario subnetear.
+Los enlaces entre router y la red en general toman el número de host más alto posible (pero es solo una convención como para no pifiarla asignando hosts y tener un margen)
+
 ![e7i](./e7ip2.png)
 Preguntar si el que va a internet es un host random que me haya quedado libre.
 
@@ -104,26 +147,43 @@ Destino | Máscara | Gateway|
 200.13.149.0| /24 | ED|
 
 ii.
-Necesitamos 3 subredes. Entonces con 2 bits nos alcanza ya que 2^2 = 4. Con lo cual la máscara nos queda /26 (24+2)
-El ID de la red es: 200.13.147.0
-En cada subred tenemos 2^6 - 2 hosts UTILES = 62 (64 en total)
-Subred 1: 200.13.147.0 (00-000000) => rango de hosts: 200.13.147.1 a 200.13.147.62 (.63 broadcast) 
-Subred 2: 200.13.147.64 (01-000000) => rango de hosts: 200.13.147.65 a 200.13.147.126 (.127 broadcast)
-Subred 3: 200.13.147.128 (10-000000) => rango de hosts: 200.13.147.129 a 200.13.147.190 (.191 broadcast)
-No la voy a usar, aunque flavio la usó para el enlace al router que sale a internet xd: Subred 4: 200.13.147.192 (11-000000) => rango de hosts: 200.13.147.193 a XD
 
-HACER DIBUJITO
+a)
+
+El ID de la red es: 200.13.147.0
+
+Necesitamos 3 subredes. Entonces con 2 bits nos alcanza ya que 2^2 = 4. Con lo cual la máscara nos queda /26 (24 de la default+2)
+
+En cada subred tenemos 2^6 - 2 hosts UTILES = 62 (64 en total, pero el 1ero va al ID de la red y el último para broadcast)
+* Subred 1: 200.13.147.0 (00-000000) => rango de hosts: 200.13.147.1 a 200.13.147.62 (.63 broadcast) 
+* Subred 2: 200.13.147.64 (01-000000) => rango de hosts: 200.13.147.65 a 200.13.147.126 (.127 broadcast)
+* Subred 3: 200.13.147.128 (10-000000) => rango de hosts: 200.13.147.129 a 200.13.147.190 (.191 broadcast)
+* Subred 4: 200.13.147.192 (11-000000) => rango de hosts: 200.13.147.193 a 200.13.147.254 (.255 broadcast)
+Nota: no es necesaria para las redes pedidas, pero flavio la usó para el enlace al router que sale a internet.
+
+![e7ii](./e7iiap2.png)
+
+PD: En los enlaces entre los routers y las redes no usé el número máximo máximo pq pintó nomás 
 
 b)
+
+Tabla de routeo de R
+
 Destino | Máscara | Gateway|
 --------|---------|--------|
 200.13.147.0| /26 | Entrega directa|
-200.13.147.64| /26 | ED|
-200.13.147.128| /26 | ED|
-...(VER)
+200.13.147.64| /26 | Entrega directa|
+200.13.147.128| /26 | Entrega directa|
+200.13.147.192 (internet) | /26 | Entrega directa |
+0.0.0.0 | /0 | 200.13.147.1 |
+
+El significado de la última línea sería: si quiero ir a cualquier otro lado que no sean las direcciones anteriores, lo mando al host A (pq si)
 
 **Ejercicio 8**
 
 La 199.199.20.6 es la que va del router a Internet (pq las IP publicas son las que tienen acceso desde internet, asumiendo que la que nos dan es pública)
 
 El ID de la red 
+
+**Ejercicio 9**
+en la red 2, 11 host
