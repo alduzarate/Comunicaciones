@@ -189,7 +189,7 @@ El significado de la última línea sería: si quiero ir a cualquier otro lado q
   
 i. y ii.
 
-ID de la red: 199.199.20.0/24 (al ser clase C)
+ID de la red: 199.199.20.0/24 (al ser clase C). Asumo que la máscara es la por default de la clase, ya que si quisiera conservar esta IP: 199.199.20.00000110 y generar desde ahí, deberíamos usar una máscara de /31 y sería un absurdo poder cumplir los requerimientos del ejercicio.
 
 Necesitamos 5 (6 si consideramos a internet) subredes. Como primera idea podríamos pensar en robarnos 3 bits del host, para así generar 8 subredes (ya que si nos robamos 2 bits generamos solo 4 subredes). Si hacemos esto, nos quedarían 5 bits para los hosts de cada subred. Es decir, tendríamos 2^5 - 2 = 30 hosts útiles por subred. Con lo cual, no podemos seguir adelante con esta idea ya que tenemos como requerimiento que las redes 1 y 5 tengan como mínimo 50 hosts útiles.
 
@@ -231,11 +231,46 @@ Con lo cual, finalmente nos quedan las siguientes direcciones:
 * Red 4: 199.199.20.192/27 => rango hosts: 199.199.20.193 a 199.199.20.222 (.223 broadcast)
 * Internet: 199.199.20.224/27
 
-Esquema:
+Posible esquema:
+
+![e8ii](./e8iip2.png)
 
 b) Tablas de ruteo
 
+**R1**
 
+Destino              |Máscara| Gateway  |
+---------------------|------|-----------|
+Red 1: 199.199.20.0  | /26  |Entrega directa           |
+Red 2: 199.199.20.128| /27  |Entrega directa           |
+Red 3: 199.199.20.160| /27  |199.199.20.61 (Red 1 a R3) (*) | 
+Red 4: 199.199.20.192| /27  |199.199.20.61 (Red 1 a R3)           |
+Red 5: 199.199.20.64 | /26  |199.199.20.61 (Red 1 a R3)           |
+Inet: 199.199.20.224 | /27  |Entrega directa           |
+
+(*) También podría haber sido 199.199.20.157 (Red 2 a R2). Es la entrada desde la red que sí tengo acceso desde R1, que tiene otra salida que va a mi red deseada (Red 3 en este caso)
+
+**R2**
+
+Destino              |Máscara| Gateway  |
+---------------------|------|-----------|
+Red 1: 199.199.20.0  | /26  |   199.199.20.158 (Red2 a R1)         |
+Red 2: 199.199.20.128| /27  |Entrega directa           |
+Red 3: 199.199.20.160| /27  |Entrega directa | 
+Red 4: 199.199.20.192| /27  |199.199.20.189 (Red3 a R3)           |
+Red 5: 199.199.20.64 | /26  |199.199.20.189 (Red3 a R3)            |
+Inet: 199.199.20.224 | /27  |199.199.29.159 (Red2 a R1)    |
+
+**R3**
+
+Destino              |Máscara| Gateway  |
+---------------------|------|-----------|
+Red 1: 199.199.20.0  | /26  |Entrega directa            |
+Red 2: 199.199.20.128| /27  |199.199.20.190 (Red3 a R2)           |
+Red 3: 199.199.20.160| /27  |Entrega directa | 
+Red 4: 199.199.20.192| /27  |Entrega directa           |
+Red 5: 199.199.20.64 | /26  |Entrega directa           |
+Inet: 199.199.20.224 | /27  |199.199.20.62 (Red1 a R1)     |
 
 **Ejercicio 9**
 en la red 2, 11 host
