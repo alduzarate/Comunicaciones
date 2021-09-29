@@ -239,7 +239,15 @@ Ejemplo donde todos están en la misma red:
 
 **Ejercicio 16**
 
-No, porque no puede tener 14 esclavos (el máximo es 7)
+Es imposible para un dispositivo maestro estar en dos piconets al mismo tiempo. Hay dos
+problemas. El primer o es que sólo 3 bits de dirección están disponibles en la cabecera al mismo
+tiempo hasta siete esclavos podían ser en cada piconet. Por lo tanto, no hay manera de abordar de
+forma única cada esclavo. EL segundo es que el código de acceso al comienzo de la cabecera se
+deriva de la identidad del maestro. Así es como los esclavos dicen cuál es el mensaje que pertenece
+a la piconet. Si se superponen dos piconets utilizó el mismo código de acceso, no habría forma de
+saber a cual piconet pertenecía. En efecto, las dos piconets se fusionarán en una piconet grande en
+lugar de dos separadas.
+
 
 **Ejercicio 17**
 

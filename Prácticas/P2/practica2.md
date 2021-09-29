@@ -320,6 +320,8 @@ Posible esquema:
 
 ![e9](./e9p2.png)
 
+ERRATA: lo que está tachado no tiene que estar tachado pq una cosa es la IP del globo (internet) y otra el enlace.
+
 ii.
 
 Tablas de routeo
