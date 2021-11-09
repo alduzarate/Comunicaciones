@@ -262,8 +262,7 @@ lugar de dos separadas.
 En una piconet de un BLE,  un maestro puede comunicarse con más 7 esclavos sobre canales físicos separados. Tanto maestro como esclavo son asincrónicos.
 - Un dispositivo BLE puede elegir entre las topologias broadcasting o de conexiones (se usa cuando se quiere transmitir bidireccionalmente y sigue un esquema maestro-esclavo).
 - Ademas el mecanismo maestro-esclavo, tiene transmisor-receptor. 
-  
-TODO: leer apuntes cátedra porlas
+
 
 **Ejercicio 19**
 
