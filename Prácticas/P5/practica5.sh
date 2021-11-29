@@ -118,9 +118,96 @@ $I -t nat -A POSTROUTING -s $DMZ -o $IF_EXT -j SNAT -to $IP_EXT
 
 # Ejercicio 28112018
 
+# Definición de variables
+
+WEB_SRV = 181.16.1.18 # pública
+PROXY = 181.16.1.19 # pública
+DMZ = 181.16.1.16/28 # red pública
+IP_EXT = 200.3.1.2
+LAN = 10.0.1.0/24 # privada
+ADMIN_PC = 10.0.1.22 # privada
+IF_LAN = eth0 
+IF_DMZ = eth1
+IF_EXT = eth2 
+
+I = /sbin/iptables
+
+case $1 in 
+start)
+
+# Limpiamos reglas anteriores 
+$I -F -t filter 
+$I -F -t nat
+
+# Policies
+
+# Reglas de estado (firewall stateful)
+for i in INPUT, OUTPUT, FORWARD; do
+$I -A $i -m state --state INVALID -j DROP
+$I -A $i -m state --state RELATED, ESTABLISHED -j ACCEPT
+done
+
+# Tabla FILTER
+
+# Cadenas INPUT y OUTPUT
+
+# 1- La PC de administración es el único lugar desde donde se puede acceder al servicio ssh de los servidores y el firewall.
+$I -A INPUT -i $IF_LAN -s $ADMIN_PC -p tcp -dport 22 -j ACCEPT
+$I -A INPUT -j DROP # $I -P INPUT DROP
+
+# 6- El firewall solo tiene acceso al proxy (para actualizaciones).
+$I -A OUTPUT -i $IF_DMZ -d $PROXY -p tcp -dport 3128 -j ACCEPT
+$I -A OUTPUT -j DROP    #I -P OUTPUT DROP
+
+# Cadena FORWARD
+
+# 1- La PC de administración es el único lugar desde donde se puede acceder al servicio ssh de los servidores
+$I -A FORWARD -i $IF_LAN -o $IF_DMZ -s $ADMIN_PC -d $DMZ -p tcp -dport 22 -j ACCEPT
+# $I -A FORWARD -m iprange -s $ADMIN_PC -i $IF_LAN --dst-range $WEB_SRV-$PROXY -p tcp --dport 22 -j ACEPT para especificar IPs de los servers
+$I -A FORWARD -o $IF_DMZ -dport 22 -j REJECT
+
+# 2- Las PC de la LAN pueden acceder a los servicios restantes de los servidores de la DMZ
+$I -A FORWARD -i $IF_LAN -o $IF_DMZ -s $LAN -d $DMZ -j ACCEPT
+
+# 3- Las PC pueden acceder a Internet en forma directa, exceptuando la navegación web que debe realizarse exclusivamente a través del proxy.
+#Para los servicios que no pasan por el proxy, es necesario realizar NAT, pues tienen direcciones privadas.
+$I -A FORWARD -i $IF_LAN -s $LAN -o $IF_EXT -m multiport -dports 80,443 -p tcp -j REJECT
+$I -A FORWARD -i $IF_LAN -s $LAN -o $IF_EXT -j ACCEPT # hay que natear después
+
+# 4- Los servidores de la DMZ solo pueden acceder a servicios DNS y web en Internet, y no tienen acceso alguno a la LAN.
+#DNS
+$I -A FORWARD -i $IF_DMZ -s $DMZ -o $IF_EXT -p udp -dport 53 -j ACCEPT
+$I -A FORWARD -i $IF_DMZ -s $DMZ -o $IF_EXT -p tcp -dport 53 -j ACCEPT
+#WEB
+$I -A FORWARD -m multiport -i $IF_DMZ -s $DMZ -o $IF_EXT -p tcp -dports 80,443 -j ACCEPT
+# Restriccion
+$I -A FORWARD -i $IF_DMZ -s $DMZ -o $IF_LAN -d $LAN -j REJECT
+
+# 5- Desde Internet, solo se puede acceder a los servicios DNS (ambos servers) y Web del “www”
+$I -A FORWARD -i $IF_EXT -d $DMZ -o $IF_DMZ -p udp -dport 53 -j ACCEPT
+$I -A FORWARD -i $IF_EXT -d $DMZ -o $IF_DMZ -p tcp -dport 53 -j ACCEPT
+
+$I -A FORWARD -m multiport -i $IF_EXT -d $WEB_SRV -o $IF_DMZ -p tcp -dports 80,443 -j ACCEPT 
 
 
+$I -P FORWARD DROP
 
+# Tabla NAT
+$I -t nat -A POSTROUTING -s $LAN -o $IF_EXT -j SNAT -to $IP_EXT
+
+;;
+stop)
+$I -P INPUT ACCEPT
+$I -P FORWARD DROP
+$I -P OUTPUT ACCEPT
+$I -F -t nat
+$I -F
+;;
+*)
+echo "Sintaxis: $0 <start|stop>"
+exit 1
+;;
+esac
 
 
 # Ejercicio 16122020
